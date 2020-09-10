@@ -6,7 +6,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = format_suffix_patterns([
 	# path('', views.apiOverview, name="api-overview"),
   	 path('posts/', views.PostViewSet.as_view({'get': 'list'})),
-  	 path('post-create/', views.PostViewSet.as_view({'get':'create'})),
+  	 path('post-create/', views.PostViewSet.as_view({'post':'create'})),
 	 path('post-detail2/<int:pk>',views.getObject),
   	 path('post-update/<int:pk>',views.PostViewSet.as_view({'put':'partial_update'})),
   	 path('post-update3/<int:pk>',views.postUpdate),

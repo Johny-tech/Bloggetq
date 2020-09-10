@@ -46,7 +46,7 @@ class Profile(models.Model):
 	date_created = models.DateTimeField(auto_now_add=True, null=True)
 	substo=models.ManyToManyField("api.Profile",through="api.Relationship", verbose_name=("relations"))
 	authority = models.ManyToManyField("api.Profile", through="api.Estimation", verbose_name=("pricedProfiles"),related_name='estimations')
-
+	
 	
 	def hash_file(file, block_size=65536):
 		hasher = hashlib.md5()
@@ -106,7 +106,7 @@ class Post(models.Model):
 	viewed = models.PositiveIntegerField(default=1,null=True)
 	
 	def __str__(self):
-		return self.title
+		return "id:{0}".format(self.id)
 
 
 # relational table

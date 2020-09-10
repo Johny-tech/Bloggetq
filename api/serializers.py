@@ -186,8 +186,24 @@ class CreatePostSerializer(serializers.ModelSerializer):
 
 
 	def create(self, validated_data):
-    
-		return Post.objects.create(**validated_data)
+		
+		user =  self.context['request'].user
+
+		cats = validated_data.pop('category')
+		posts = Post.objects.create(
+			title=validated_data['title'],
+			content=validated_data['content'],
+			bannerpic = validated_data['bannerpic'],
+			viewed=0,
+			author=validated_data['author'],
+		)
+
+		for ctg in cats:
+			posts.category.add(ctg)
+
+		print(posts)
+		return posts
+
 
 class CategorySerializer(serializers.ModelSerializer):
 	
@@ -208,10 +224,12 @@ class PostUpdateSerializer(serializers.ModelSerializer):
 	def partial_update(self,instance,validated_data):
 
 		instance.title = validated_data.get('title', instance.title)
-		
+			
 		instance.content = validated_data.get('content', instance.content)
 		
 		instance.bannerpic = validated_data.get('bannerpic', instance.bannerpic)
+
+		instance.viewed=instance.viewed+1
 
 		instance.save()
 
