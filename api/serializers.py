@@ -238,3 +238,21 @@ class PostUpdateSerializer(serializers.ModelSerializer):
 		#remember forever dont make this mistake when data is manytomany use obj.set() instead of .save()
         
 		return instance
+
+
+
+#new Field
+
+CATEGORY = (
+		('free', 'free'),
+		('pro','pro'),
+		('premium', 'premium'),
+	)
+
+class MembershipSerializer(serializers.ModelSerializer):	
+
+	subtype  = serializers.ChoiceField(choices = CATEGORY)
+
+	class Meta:
+		model = Relationship
+		fields = ('user1','user2','subtype')

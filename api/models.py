@@ -4,6 +4,8 @@ import hashlib
 from functools import partial
 from django.contrib.auth.models import User
 from django.template.defaultfilters import slugify
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 #manager are heree ok??
 
 
@@ -64,15 +66,23 @@ class Profile(models.Model):
 
 		return "{0}.{1}".format(hash_file(instance.profilepic), filename_ext)
 
-
-
-
-
 	def __str__(self):
 		return self.user.username
 
 
-		
+#signals-------------
+
+
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+post_save.connect(create_user_profile,sender=User)		
+
+
+
+
+
 
 #here is the  model which realises xow  one user can subscibte to others
 class Relationship(models.Model):
@@ -88,12 +98,23 @@ class Relationship(models.Model):
 
 
 
+
+
+
+
+
+
+
 class Category(models.Model):
 	name = models.CharField(max_length=200, null=True)
 	date_created = models.DateTimeField(auto_now_add=True, null=True)
 	def __str__(self):
 
 		return self.name
+
+
+
+
 
 
 class Post(models.Model):
@@ -107,6 +128,9 @@ class Post(models.Model):
 	
 	def __str__(self):
 		return "id:{0}".format(self.id)
+
+
+
 
 
 # relational table
@@ -127,11 +151,17 @@ class Coment(models.Model):
 	parent = models.ForeignKey("api.Coment", on_delete=models.CASCADE,null=True,blank=True,related_name='children')
 
 
+
+
 class RattingStar(models.Model):
 	value = models.SmallIntegerField(default=0)
+
+
 
 
 class PostsRatting(models.Model):
 	ip = models.CharField(max_length=15)
 	star = models.ForeignKey(RattingStar, null=True , on_delete = models.CASCADE)
 	post = models.ForeignKey(Post, null=True, on_delete=models.SET_NULL,related_name="ratings")
+
+
